@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       user.hasMany(models.post)
+      user.hasMany(models.comment)
+      user.hasMany(models.like)
     }
   };
   user.init({
