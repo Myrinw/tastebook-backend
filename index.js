@@ -1,5 +1,7 @@
 const express = require('express');
 const userRouter = require('./routers/users');
+const loginRouter = require('./routers/auth');
+
 const app = express();
 const port = 4000;
 const Likes = require('./models').like;
@@ -9,6 +11,8 @@ const Followers = require('./models').follower;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use('/login', loginRouter);
 
 app.use('/users', userRouter);
 
