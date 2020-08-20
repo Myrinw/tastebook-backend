@@ -2,6 +2,8 @@ const { Router } = require('express');
 const router = new Router();
 const Users = require('../models').user;
 const bcrypt = require('bcrypt')
+const authMidleware = require('../auth/middleware');
+const { toData } = require("../auth/jwt");
 
 
 
@@ -12,6 +14,18 @@ router.get('/', async (req, res, next) => {
         res.send(users);
     } catch (e) {
         next(e)
+    }
+})
+
+router.post('/me', async (req, res, next) => {
+    console.log('testetse')
+    const { token } = req.body;
+    const data = toData(token);
+    try {
+        const user = await Users.findByPk(data.userId);
+        res.send(user);
+    } catch (e) {
+        next(e);
     }
 })
 
