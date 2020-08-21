@@ -2,7 +2,7 @@ const User = require("../models").user;
 const { toData } = require("./jwt");
 
 async function auth(req, res, next) {
-    console.log(req.headers);
+    console.log('in middleware now!');
     const auth = req.headers.authorization && req.headers.authorization.split(" ");
     if (auth && auth[0] === "Bearer" && auth[1]) {
         try {
