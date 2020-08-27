@@ -7,7 +7,7 @@ const likesRouter = require('./routers/likes');
 const cors = require('cors');
 
 const app = express();
-const port = 4000;
+const PORT = process.env.PORT || 4000;
 const Likes = require('./models').like;
 const Comments = require('./models').comment;
 const Followers = require('./models').follower;
@@ -28,6 +28,6 @@ app.use('/likes', likesRouter);
 
 
 
-app.listen(port, () => {
-    console.log(`listening on port ${port}`)
+app.listen(PORT, () => {
+    console.log(`listening on port ${PORT}`)
 })
