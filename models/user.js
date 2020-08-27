@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       user.hasMany(models.post);
       user.hasMany(models.comment);
       user.hasMany(models.like);
+      user.hasOne(models.food);
     }
   };
   user.init({

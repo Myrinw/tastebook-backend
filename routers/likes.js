@@ -4,11 +4,11 @@ const router = new Router();
 const likes = require('../models').like;
 
 router.get('/:id', async (req, res, next) => {
-    const userId = req.params.id;
+    const postId = req.params.id;
     try {
         const userLikes = await likes.findAll({
             where: {
-                userId: userId
+                postId
             }
         });
         res.json(userLikes);
