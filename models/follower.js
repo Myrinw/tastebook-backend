@@ -10,15 +10,32 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      follower.belongsTo(models.user)
+      follower.belongsTo(models.user);
     }
   };
   follower.init({
-    userId: DataTypes.INTEGER,
-    followerId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'follower',
-  });
+    userId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "users",
+        key: "id"
+      },
+      onUpdate: "CASCADE",
+      onDelete: "SET NULL",
+    },
+    followerId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "users",
+        key: "id"
+      },
+      onUpdate: "CASCADE",
+      onDelete: "SET NULL",
+    },
+  }
+    , {
+      sequelize,
+      modelName: 'follower',
+    });
   return follower;
 };

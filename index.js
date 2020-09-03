@@ -4,16 +4,19 @@ const loginRouter = require('./routers/auth');
 const postsRouter = require('./routers/posts');
 const commentsRouter = require('./routers/comments');
 const likesRouter = require('./routers/likes');
+const followersRouter = require('./routers/followers');
 const exphbs = require('express-handlebars');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 const path = require('path');
+const authMidleware = require('./auth/middleware');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 const Likes = require('./models').like;
 const Comments = require('./models').comment;
 const Followers = require('./models').follower;
+const Food = require('./models').food;
 
 //view engine
 app.engine('handlebars', exphbs());
@@ -36,7 +39,9 @@ app.use('/comments', commentsRouter);
 
 app.use('/likes', likesRouter);
 
-app.post('/mail', (req, res) => {
+app.use('/followers', followersRouter);
+
+app.post('/mail', authMidleware, (req, res) => {
     const { email, text } = req.body;
     if (!email || !text) {
         res.status(404).send('missing paramaters');
@@ -70,6 +75,29 @@ app.post('/mail', (req, res) => {
 
         console.log('Message sent: ' + info.response);
     });
+});
+
+app.post('/food', async (req, res, next) => {
+    const { restriction, cuisine, alcohol, meal, userId } = req.body;
+    if (!restriction || !cuisine || !alcohol || !meal) {
+        res.status(404).send('missing parameters');
+    }
+    try {
+        const newFood = await Food.create({
+            restriction,
+            cuisine,
+            alcohol,
+            meal,
+            userId,
+        });
+        if (newFood) {
+            res.send(newFood);
+        }
+    } catch (e) {
+        next(e);
+    }
+
+
 })
 
 app.listen(PORT, () => {
