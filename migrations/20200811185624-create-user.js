@@ -20,6 +20,9 @@ module.exports = {
       bio: {
         type: Sequelize.STRING
       },
+      picture: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
