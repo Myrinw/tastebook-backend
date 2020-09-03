@@ -4,13 +4,26 @@ const loginRouter = require('./routers/auth');
 const postsRouter = require('./routers/posts');
 const commentsRouter = require('./routers/comments');
 const likesRouter = require('./routers/likes');
+const followersRouter = require('./routers/followers');
+const exphbs = require('express-handlebars');
+const nodemailer = require('nodemailer');
 const cors = require('cors');
+const path = require('path');
+const authMidleware = require('./auth/middleware');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 const Likes = require('./models').like;
 const Comments = require('./models').comment;
 const Followers = require('./models').follower;
+const Food = require('./models').food;
+
+//view engine
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
+//Static folder
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 app.use(express.json());
@@ -26,7 +39,66 @@ app.use('/comments', commentsRouter);
 
 app.use('/likes', likesRouter);
 
+app.use('/followers', followersRouter);
 
+app.post('/mail', authMidleware, (req, res) => {
+    const { email, text } = req.body;
+    if (!email || !text) {
+        res.status(404).send('missing paramaters');
+    }
+    let transporter = nodemailer.createTransport({
+        host: "smtp-mail.outlook.com",
+        port: 587,
+        secureConnection: false, // true for 465, false for other ports
+        tls: {
+            ciphers: 'SSLv3'
+        },
+        auth: {
+            user: 'myrin.w@outlook.com', // generated ethereal user
+            pass: 'Breakdance123', // generated ethereal password
+        },
+    });
+    let mailOptions = {
+        from: '<myrin.w@outlook.com>', // sender address (who sends)
+        to: `${email}`, // list of receivers (who receives)
+        subject: 'Tastebook', // Subject line
+        text: 'Hello world ', // plaintext body
+        html: `${text}` // html body
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            return console.log(error);
+            res.status(400).send("email failed");
+        } else {
+            res.send('email sent!');
+        }
+
+        console.log('Message sent: ' + info.response);
+    });
+});
+
+app.post('/food', async (req, res, next) => {
+    const { restriction, cuisine, alcohol, meal, userId } = req.body;
+    if (!restriction || !cuisine || !alcohol || !meal) {
+        res.status(404).send('missing parameters');
+    }
+    try {
+        const newFood = await Food.create({
+            restriction,
+            cuisine,
+            alcohol,
+            meal,
+            userId,
+        });
+        if (newFood) {
+            res.send(newFood);
+        }
+    } catch (e) {
+        next(e);
+    }
+
+
+})
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
