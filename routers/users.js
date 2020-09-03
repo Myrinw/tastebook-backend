@@ -2,7 +2,8 @@ const { Router } = require('express');
 const router = new Router();
 const Users = require('../models').user;
 const Post = require('../models').post;
-const Food = require('../models').food
+const Food = require('../models').food;
+const Following = require('../models').follower;
 const bcrypt = require('bcrypt')
 const authMidleware = require('../auth/middleware');
 const { toData } = require("../auth/jwt");
@@ -16,6 +17,22 @@ router.get('/', async (req, res, next) => {
             include: [Food],
         });
         res.send(users);
+    } catch (e) {
+        next(e)
+    }
+});
+
+router.get('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    try {
+        const user = await Users.findByPk(id, {
+            include: [Food, Post, Following],
+        });
+        if (user) {
+            res.send(user)
+        } else {
+            res.status(404).send('user not found');
+        }
     } catch (e) {
         next(e)
     }
