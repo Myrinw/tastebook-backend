@@ -56,4 +56,23 @@ router.post('/', authMidleware, async (req, res, next) => {
     }
 });
 
+router.delete('/', authMidleware, async (req, res, next) => {
+    const { userId, followerId } = req.body;
+    if (!userId || !followerId) {
+        res.status(404).send("missing paramaters");
+    }
+
+    try {
+        const deleteFollowing = await Following.destroy({
+            where: {
+                userId,
+                followerId
+            }
+        });
+        res.send(deleteFollowing);
+    } catch (e) {
+        next(e);
+    }
+})
+
 module.exports = router
