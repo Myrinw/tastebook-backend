@@ -3,6 +3,15 @@ const authMidleware = require('../auth/middleware');
 const router = new Router();
 const likes = require('../models').like;
 
+router.get('/', async (req, res, next) => {
+    try {
+        const allLikes = await likes.findAll();
+        res.json(allLikes);
+    } catch (e) {
+        next(e)
+    }
+})
+
 router.get('/:id', async (req, res, next) => {
     const postId = req.params.id;
     try {
