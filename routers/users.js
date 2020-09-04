@@ -54,7 +54,7 @@ router.post('/me', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-        const { email, password, username, bio } = req.body;
+        const { email, password, username, picture, bio } = req.body;
         if (!email || !password || !username || !bio) {
             res.status(400).send("missing parameters");
         } else {
@@ -63,6 +63,7 @@ router.post('/', async (req, res, next) => {
                 email,
                 password: hashedPassword,
                 username,
+                picture,
                 bio
             });
             res.json(newUser);
