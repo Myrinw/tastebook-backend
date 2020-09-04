@@ -11,7 +11,7 @@ const { toData } = require("../auth/jwt");
 
 
 router.get('/', async (req, res, next) => {
-    console.log("reached the router");
+
     try {
         const users = await Users.findAll({
             include: [Food],
@@ -26,7 +26,7 @@ router.get('/:id', async (req, res, next) => {
     const id = req.params.id;
     try {
         const user = await Users.findByPk(id, {
-            include: [Food, Post, Following],
+            include: [Food, Post],
         });
         if (user) {
             res.send(user)
