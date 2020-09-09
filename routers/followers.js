@@ -34,6 +34,7 @@ router.get('/following/:id', async (req, res, next) => {
                 followerId: id
             }
         });
+        res.send(following);
     } catch (e) {
         next(e)
     }
