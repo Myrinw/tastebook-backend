@@ -70,7 +70,7 @@ router.delete('/', authMidleware, async (req, res, next) => {
                 followerId
             }
         });
-        res.send(deleteFollowing);
+        res.satus(200).send("deleted succesfully");
     } catch (e) {
         next(e);
     }
