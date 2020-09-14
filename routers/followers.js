@@ -58,6 +58,7 @@ router.post('/', authMidleware, async (req, res, next) => {
 });
 
 router.delete('/', authMidleware, async (req, res, next) => {
+    console.log('trying to delete')
     const { userId, followerId } = req.body;
     if (!userId || !followerId) {
         res.status(404).send("missing paramaters");
@@ -70,7 +71,7 @@ router.delete('/', authMidleware, async (req, res, next) => {
                 followerId
             }
         });
-        res.satus(200).send("deleted succesfully");
+        res.status(200).send("deleted succesfully");
     } catch (e) {
         next(e);
     }
