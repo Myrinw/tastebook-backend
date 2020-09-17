@@ -3,6 +3,7 @@ const authMidleware = require('../auth/middleware');
 const e = require('express');
 const router = new Router();
 const comments = require('../models').comment;
+const Users = require('../models').user;
 
 router.get('/:postId', async (req, res, next) => {
     const postId = req.params.postId;
@@ -10,9 +11,10 @@ router.get('/:postId', async (req, res, next) => {
         const allComments = await comments.findAll({
             where: {
                 postId,
-            }
+            },
+            include: [{ model: Users, attributes: ["username", "picture"] }]
         });
-        res.json(allComments);
+        res.send(allComments);
     } catch (e) {
         next(e);
     }
